@@ -15,11 +15,11 @@ import android.widget.TextView;
 import net.sambla.fizzbuzz.FizzBuzz;
 
 public class GameMainActivity extends Activity implements OnClickListener {
-	
+
 	private TextView score;
 	private TextView number;
 	private TextView time;
-	
+
 	private Button btn_next;
 	private Button btn_fizz;
 	private Button btn_buzz;
@@ -28,11 +28,13 @@ public class GameMainActivity extends Activity implements OnClickListener {
 
 	private int score_num = 0;
 	private int time_num = 60;
-	
+
 	private Handler mHandler;
 	private Timer timer;
 	private TimerTask task;
-	
+
+	private int failed_point = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,27 +78,38 @@ public class GameMainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.to_title:
 			Intent intent = new Intent(this, TitleActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
 			finish();
 		}
-		
+
 		if(answer.equals(FizzBuzz.fizzbuzz(Integer.parseInt((String) number.getText())))){
 			score_num += add_score;
+			if(failed_point > 0) failed_point--;
 		}else{
-			score_num -= 2;
+			if(failed_point>=15){
+				score_num -= 16;
+			}else if(failed_point>=10){
+				score_num -= 8;
+			}else if(failed_point>=5){
+				score_num -= 4;
+			}else{
+				score_num -= 2;
+			}
+			failed_point+=5;
 			if(score_num < 0) score_num = 0;
 		}
 		number.setText(Integer.parseInt((String) number.getText()) + 1 + "");
 		score.setText("score:"+score_num);
 	}
-	
+
    @Override
    public void onStop(){
 	   super.onStop();
 	   timer.cancel();
 	   task=null;
    }
-	
+
    @Override
    public void onResume(){
 	   super.onResume();
@@ -107,9 +120,9 @@ public class GameMainActivity extends Activity implements OnClickListener {
 		task = new MyTimer();
 		timer.scheduleAtFixedRate(task, 0, 1000);
 	}
-	
+
 	private class MyTimer extends TimerTask {
-		
+
 		@Override
 		public void run() {
 			time_num--;
@@ -120,11 +133,12 @@ public class GameMainActivity extends Activity implements OnClickListener {
 					if(time_num <= 0){
 						timer.cancel();
 						Intent intent = new Intent(GameMainActivity.this, GameOverActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 						intent.putExtra("score", score_num);
 						startActivity(intent);
 						finish();
 					}
-				}	
+				}
 			});
 		}
 	}
