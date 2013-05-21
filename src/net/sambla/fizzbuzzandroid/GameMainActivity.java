@@ -26,14 +26,14 @@ public class GameMainActivity extends Activity implements OnClickListener {
 	private Button btn_fizzbuzz;
 	private Button btn_to_title;
 
-	private int score_num = 0;
-	private int time_num = 60;
+	private int score_num;
+	private int time_num;
 
 	private Handler mHandler;
 	private Timer timer;
 	private TimerTask task;
 
-	private int failed_point = 0;
+	private int failed_point;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,10 @@ public class GameMainActivity extends Activity implements OnClickListener {
 		mHandler = new Handler();
 		btn_to_title=(Button) findViewById(R.id.to_title);
 		btn_to_title.setOnClickListener(this);
+
+		score_num = 0;
+		time_num = 60;
+		failed_point = 0;
 	}
 
 	@Override
@@ -136,6 +140,7 @@ public class GameMainActivity extends Activity implements OnClickListener {
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 						intent.putExtra("score", score_num);
 						startActivity(intent);
+						onStop();
 						finish();
 					}
 				}

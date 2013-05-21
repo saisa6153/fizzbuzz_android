@@ -4,6 +4,8 @@ package net.sambla.fizzbuzzandroid;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,6 +32,13 @@ public class GameOverActivity extends Activity implements OnClickListener {
 		Intent intent = getIntent();
 		int score = intent.getExtras().getInt("score");
 		result.setText("Score:"+score);
+		
+		SharedPreferences pre = getSharedPreferences("fizzbazz", MODE_WORLD_READABLE);
+		if(score>pre.getInt("highscore", -1)){
+			Editor editor = pre.edit();
+			editor.putInt("highscore", score);
+			editor.commit();
+		}
 
 		if(score < 10){
 			rank.setText("Rank:Fool!");

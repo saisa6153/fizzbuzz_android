@@ -16,6 +16,8 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 
+.keystore
+
 # Global/Eclipse.gitignore
 *.pydevproject
 .project
